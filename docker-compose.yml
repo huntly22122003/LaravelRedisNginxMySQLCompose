@@ -1,0 +1,38 @@
+
+services:
+  app:
+    build: .
+    image: php:8.2-fpm
+    container_name: laravel_app
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+      - redis
+  nginx:
+    image: nginx:latest
+    container_name: nginx_web
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - app
+
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"
+
+  redis:
+    image: redis:7
+    container_name: redis_cache
+    ports:
+      - "6380:6379"
