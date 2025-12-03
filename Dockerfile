@@ -6,6 +6,5 @@ RUN apt-get update && apt-get install -y curl unzip \
     && mv composer.phar /usr/local/bin/composer \
     && curl -L https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz \
        | tar -C /usr/local/bin -xz
-       
-RUN pecl install redis \
-    && docker-php-ext-enable redis
+
+RUN docker-php-ext-enable redis
