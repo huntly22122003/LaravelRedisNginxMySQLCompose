@@ -30,6 +30,19 @@ return [
     */
 
     'connections' => [
+        
+        'shop' => [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST', 'db'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => 'shop',
+            'username' => env('DB_USERNAME', 'laravel'),
+            'password' => env('DB_PASSWORD', 'secret'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+        ],
 
         'sqlite' => [
             'driver' => 'sqlite',

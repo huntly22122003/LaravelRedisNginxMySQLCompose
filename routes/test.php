@@ -5,8 +5,5 @@ Route::get('/test', function () {
 });
 Route::post('/test', function (\Illuminate\Http\Request $request) {
     // Chỉ đơn giản return dữ liệu để test
-    return response()->json([
-        'message' => 'POST thành công!',
-        'input' => $request->all(),
-    ]);
+    return redirect('/');
 });
