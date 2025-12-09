@@ -4,13 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use App\Models\UserShop;
+use App\Services\UserService;
 use Exception;
 
 class RegisterController extends Controller
 {
+    protected $userService;
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
     public function showRegisterForm()
     {
         return view('register'); // view resources/views/register.blade.php
@@ -18,10 +22,11 @@ class RegisterController extends Controller
 
     public function register(Request $request)
     {   
-        try {
         $validator = Validator::make($request->all(), [
             'name'     => ['required', 'string', 'max:255'],
-            'email'    => ['required', 'email', 'unique:shop.users,email'],
+            'email'    => ['required', 'email', 'unique:shop.user_shops,email'],
+            'phone'    => ['required', 'string', 'max:20'],
+            'address'  => ['required', 'string','max:255'],
             'password' => ['required', 'min:4', 'confirmed'],
         ]);
 
@@ -32,16 +37,13 @@ class RegisterController extends Controller
                 ->with('error', 'Dữ liệu không hợp lệ!');
         }
 
-        $user = UserShop::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        try {
+            $this->userService->register($request->all());
+            return redirect()->route('welcome')->with('success', 'Đăng ký thành công!');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
 
-        return redirect()->route('welcome')->with('success', 'Đăng ký thành công!');
-    } catch (Exception $e) {
-        return redirect()->back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
-    }
     }
 
 }

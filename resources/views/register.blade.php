@@ -18,9 +18,11 @@
 
 <form method="POST" action="{{ route('register') }}">
     @csrf
-    <input type="text" name="name" placeholder="Tên" required>
+    <input type="text" name="name" placeholder="Full name" required>
     <input type="email" name="email" placeholder="Email" required>
-    <input type="password" name="password" placeholder="Mật khẩu" required>
+    <input type="password" name="password" placeholder="Password" required>
     <input type="password" name="password_confirmation" placeholder="Xác nhận mật khẩu" required>
-    <button type="submit">Đăng ký</button>
+    <input type="phone" name="phone" placeholder="Phone number" required>
+    <input type="address" name="address" placeholder="Address" required>
+    <button type="submit">register</button>
 </form>
