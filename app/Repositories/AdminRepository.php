@@ -52,7 +52,7 @@ class AdminRepository
     public function assignRole($userId, $roleId)
     {
         $user = UserShop::findOrFail($userId);
-        $user->roles()->syncWithoutDetaching([$roleId]);
+        $user->roles()->sync([$roleId]);
         return $user;
     }
 }

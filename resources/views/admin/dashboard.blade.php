@@ -32,12 +32,18 @@
         <input type="text" name="search" value="{{ $keyword ?? '' }}" placeholder="Search users...">
         <button type="submit">Search</button>
     </form>
+
     {{-- Logout --}}
     <form method="POST" action="{{ route('logout') }}">
     @csrf
         <button type="submit">Logout</button>
     </form>
 
+    {{-- Task page --}}
+    <a href="{{ route('tasks.index') }}">
+        <button type="button">Tasks</button>
+    </a>
+    
     {{-- Add user --}}
     <a href="{{ route('admin.users.create') }}">
     <button type="button">Add User</button>

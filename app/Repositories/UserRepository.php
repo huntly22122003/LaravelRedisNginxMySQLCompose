@@ -9,4 +9,10 @@ class UserRepository
     {
         return UserShop::create($data);
     }
+
+    public function UpdatePassword(UserShop $usershop, string $newPassword)
+    {
+        $usershop->password = $newPassword;
+        return $usershop->save();
+    }
 }

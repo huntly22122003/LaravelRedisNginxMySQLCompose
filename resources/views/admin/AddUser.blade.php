@@ -21,3 +21,4 @@
         @endforeach
     </select>
 </form>
+<button type="button" class="btn btn-secondary" onclick="window.location='{{ route('admin.dashboard') }}'">Back</button>

@@ -12,4 +12,11 @@
         @csrf
         <button type="submit">Update profile</button>
     </form>
+    <a href="{{ route('tasks.index') }}">
+        <button type="button">Tasks</button>
+    </a>
+    <a href="{{ route('security.logs') }}">
+        <button type="button">Security Logs</button>
+    </a>
+
 </body>
