@@ -24,3 +24,4 @@ require __DIR__.'/register.php';
 require __DIR__.'/updateUser.php';
 require __DIR__.'/task.php';
 require __DIR__.'/securitylog.php';
+require __DIR__.'/shopifyapp.php';
