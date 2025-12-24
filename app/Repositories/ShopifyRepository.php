@@ -19,5 +19,14 @@ class ShopifyRepository
         );
     }
 
+    public function getByDomain(?string $domain): ?Shopify
+    {
+        return $domain ? Shopify::where('domain', $domain)->first() : null;
+    }
+
+    public function getFirstShop()
+    {
+        return Shopify::first();
+    }
 
 }

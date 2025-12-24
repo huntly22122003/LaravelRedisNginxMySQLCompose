@@ -10,11 +10,15 @@
     <p><strong>Shop domain:</strong> {{ $shop }}</p>
     <p><strong>Scope:</strong> {{ $data['scope'] }}</p>
     <p><strong>Access Token:</strong> {{ $data['access_token'] }}</p>
-    $data = $response->json();
+
     {{-- Nút qua trang product --}}
     <p>
         <a href="{{ route('products.index') }}">Go to Products Page</a>
     </p>
-    
+     {{-- Nút qua trang bulkshopify --}}
+    <p>
+        <a href="{{ route('shopify.bulkshopify') }}">Go to Bulk Shopify Page</a>
+    </p>
+
 </body>
 </html>

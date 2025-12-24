@@ -34,6 +34,24 @@ class ShopifyController extends Controller
         $result = $this->service->handleOAuthCallback($request);
 
         if ($result) {
+            // Lưu vào session để lấy domain kiếm token trong db
+            session(['shop_domain' => $result['shop']]);
+            return redirect('https://admin.shopify.com/store/justastore-9748/apps/runcode');
+            ///return view('shopify.success', [ 
+            ///'shop' => $result['shop'],
+            ///'data' => $result['data'],
+            ///]);
+
+        }
+
+        return response()->json(['error' => 'OAuth failed'], 400);
+    }
+    
+    public function storeSession()
+    {
+        $result = $this->service->storeSession();
+
+        if ($result) {
             return view('shopify.success', [
             'shop' => $result['shop'],
             'data' => $result['data'],
@@ -41,6 +59,7 @@ class ShopifyController extends Controller
 
         }
 
-        return response()->json(['error' => 'OAuth failed'], 400);
+        return redirect()->back()->with('error', 'No Shopify data found.');
     }
+
 }

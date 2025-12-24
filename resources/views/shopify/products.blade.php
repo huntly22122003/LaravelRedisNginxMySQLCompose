@@ -17,11 +17,27 @@
         <button type="submit">Add Product</button>
     </form>
 
-    <ul>
+    <ul>    
         @foreach($products as $product)
-            <li>{{ $product['title'] }} - {{ $product['variants'][0]['price'] ?? 'N/A' }}</li>
+            <li>
+                {{ $product['title'] }} - {{ $product['variants'][0]['price'] ?? 'N/A' }}
+                <a href="{{ route('products.edit', $product['id']) }}">Edit</a>
+                <form method="POST" action="{{ route('products.softDelete', $product['id']) }}" style="display:inline;">
+                    @csrf @method('DELETE')
+                    <button type="submit">Soft Delete</button>
+                </form>
+                {{--Variant--}}
+                <a href="{{ route('shopify.variant', ['productId' => $product['id']]) }}">Go to Variant Page</a>
+            </li>
         @endforeach
     </ul>
+    <!-- Nút sang trang Soft Delete -->
+    <div style="margin-top:20px;">
+        <a href="{{ route('products.softDeletedIndex') }}">
+            <button type="button">Manage Soft Delete Product</button>
+        </a>
+    </div>
+
 </div>
 </body>
 </html>
