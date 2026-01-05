@@ -1,9 +1,19 @@
 // resources/js/components/BulkImport.jsx
 import React, { useState } from "react";
-import { Page, Card, TextField, Button, BlockStack, InlineStack, SkeletonBodyText, SkeletonDisplayText, Toast,} from "@shopify/polaris";
+import {
+  Page,
+  Card,
+  TextField,
+  Button,
+  BlockStack,
+  InlineStack,
+  SkeletonBodyText,
+  SkeletonDisplayText,
+  Toast,
+} from "@shopify/polaris";
 import axios from "axios";
 
-export default function BulkImport({ bulkExportUrl }) {
+export default function BulkImport({ bulkImportUrl }) {
   const [productsJson, setProductsJson] = useState("");
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(null);
@@ -32,37 +42,33 @@ export default function BulkImport({ bulkExportUrl }) {
   };
 
   return (
-    <Page title="Bulk Shopify Import">
-      <Card sectioned>
-        {loading ? (
-          <>
-            <SkeletonDisplayText size="small" />
-            <SkeletonBodyText lines={6} />
-          </>
-        ) : (
-          <BlockStack gap="300">
-            <TextField
-              label="Products JSON"
-              multiline={8}
-              value={productsJson}
-              onChange={setProductsJson}
-              placeholder='[{"title":"Product 1","vendor":"Vendor A"}]'
-            />
+    <>
+      <Page title="Bulk Shopify Import">
+        <Card sectioned>
+          {loading ? (
+            <>
+              <SkeletonDisplayText size="small" />
+              <SkeletonBodyText lines={6} />
+            </>
+          ) : (
+            <BlockStack gap="3">
+              <TextField
+                label="Products JSON"
+                multiline={8}
+                value={productsJson}
+                onChange={setProductsJson}
+                placeholder='[{"title":"Product 1","vendor":"Vendor A"}]'
+              />
 
-            <InlineStack gap="300">
-              <Button primary onClick={handleImport}>
-                Import Products
-              </Button>
-
-              {bulkExportUrl && (
-                <Button url={bulkExportUrl}>
-                  Go to Export Page
+              <InlineStack gap="3">
+                <Button primary onClick={handleImport}>
+                  Import Products
                 </Button>
-              )}
-            </InlineStack>
-          </BlockStack>
-        )}
-      </Card>
+              </InlineStack>
+            </BlockStack>
+          )}
+        </Card>
+      </Page>
 
       {toast && (
         <Toast
@@ -71,6 +77,6 @@ export default function BulkImport({ bulkExportUrl }) {
           onDismiss={() => setToast(null)}
         />
       )}
-    </Page>
+    </>
   );
 }

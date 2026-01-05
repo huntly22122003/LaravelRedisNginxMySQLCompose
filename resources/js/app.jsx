@@ -1,7 +1,7 @@
 // resources/js/app.jsx
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { AppProvider } from '@shopify/polaris';
+import { AppProvider, Frame } from '@shopify/polaris';
 import '@shopify/polaris/build/esm/styles.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
@@ -43,6 +43,7 @@ if (container) { // ✅ chỉ render khi container tồn tại
     console.log("Orders data:", orderWebhooksIndex);
     root.render(
         <AppProvider i18n={{}}> 
+                <Frame>
         <Success
             shop={shop}
             scope={scope}
@@ -69,16 +70,14 @@ if (container) { // ✅ chỉ render khi container tồn tại
         <WebHooksOrder
           orders={orderWebhooksIndex}
         />
-
-        <BulkImport
+         <BulkImport
           bulkImportUrl={bulkImportUrl}
         />
         <BulkExport
           bulkExportUrl={bulkExportUrl}
             bulkExportSearchUrl={bulkExportSearchUrl}
         />
-
-
+        </Frame>
         </AppProvider>
     );
 } else {
