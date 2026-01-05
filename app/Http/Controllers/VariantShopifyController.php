@@ -17,7 +17,12 @@ class VariantShopifyController extends Controller
     {
         $variants = $this->service->listVariants($productId);
         $token = $this->service->getToken();
-        return view('shopify.variant', compact('variants', 'token', 'productId'));
+        return response()->json(
+        [
+            'variants' => $variants,
+            'token' => $token,
+            'productId' => $productId,
+        ]);
     }
 
     public function store(Request $request, $productId)
@@ -30,8 +35,9 @@ class VariantShopifyController extends Controller
             $request->input('option1')
         );
 
-        return redirect()->route('products.index', $productId)
-                         ->with('success', 'Variant created: ');
+        return response()->json([ 'message' => 'Variant created successfully', 'variant' => $variant,
+]);
+
     }
 
     public function edit($productId, $variantId)
@@ -45,21 +51,20 @@ class VariantShopifyController extends Controller
 
     public function update(Request $request, $productId, $variantId)
     {
+
         $variant = $this->service->updateVariant(
             $productId,
             $variantId,
             $request->only(['title','price','sku','option1'])
         );
 
-        return redirect()->route('products.index', $productId)
-                         ->with('success', 'Variant updated: '.$variant['id']);
+        return response()->json(['message' => 'Variant updated successfully']);
     }
 
     public function destroy($productId, $variantId)
     {
         $this->service->deleteVariant($productId, $variantId);
 
-        return redirect()->route('shopify.variant', $productId)
-                         ->with('success', 'Variant deleted successfully.');
+        return response()->json(['message' => 'Variant deleted successfully']);
     }
 }

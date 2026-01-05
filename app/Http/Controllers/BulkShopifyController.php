@@ -37,17 +37,18 @@ class BulkShopifyController extends Controller
     public function export()
     {
         $products = $this->service->exportProducts();
-        return view('shopify.BulkExport', compact('products'));
+        return response()->json($products);
     }
 
     public function searchBulk(Request $request)
     {
         $keyword = (string) $request->input('q', '');
-        $products = $keyword !== ''
-            ? $this->service->searchProducts($keyword, (int) $request->input('limit', 10))
-            : [];
+        $limit = (int) $request->input('limit', 10);
+         $products = $this->service->searchProducts($keyword, $limit);
 
-        return view('shopify.BulkExport', compact('products', 'keyword'));
+        return response()->json([
+        'data' => $products,
+    ]);
     }
 
 }

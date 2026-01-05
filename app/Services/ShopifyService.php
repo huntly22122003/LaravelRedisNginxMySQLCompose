@@ -58,7 +58,7 @@ class ShopifyService
         // 4. Đăng ký webhook orders/create
         Http::withHeaders([
             'X-Shopify-Access-Token' => $data['access_token'],
-        ])->post("https://{$shop}/admin/api/2025-10/webhooks.json", [
+        ])->post("https://{$shop}/admin/api/2025-01/webhooks.json", [
             'webhook' => [
                 'topic'   => 'orders/create',
                 'address' => url('/webhooks/orders/create'),

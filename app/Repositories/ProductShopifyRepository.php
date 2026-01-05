@@ -92,6 +92,17 @@ class ProductShopifyRepository
     {
         return ShopifySoftDeleteProduct::all();
     }
+    public function getsoftDeletedProduct()
+    {
+       return ShopifySoftDeleteProduct::all()->map(function ($item) {
+        $payload = json_decode($item->payload, true);
+        return [
+            'id' => $item->shopify_product_id,
+            'title' => $payload['title'] ?? null,
+            'price' => $payload['variants'][0]['price'] ?? null,
+        ];
+        });
+    }   
 
     public function deleteProduct($id) // Xóa vĩnh viễn trên Shopify và xóa bản ghi soft delete trong DB
     {

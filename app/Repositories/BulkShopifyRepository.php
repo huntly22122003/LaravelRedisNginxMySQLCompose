@@ -50,8 +50,9 @@ class BulkShopifyRepository
 
         return $response->json('products');
     }
-    public function searchProducts(string $keyword, int $limit = 50)
+    public function searchProducts(string $keyword = '', int $limit = 50)
     {
+        // Lấy products từ Shopify với limit
         $response = Http::withHeaders([
             'X-Shopify-Access-Token' => $this->token,
         ])->get("https://{$this->shop}/admin/api/2025-01/products.json", [
@@ -59,16 +60,34 @@ class BulkShopifyRepository
         ]);
 
         $products = $response->json('products') ?? [];
-        if (trim($keyword) === 'all') {
-        return $products;
+
+        $keyword = trim(mb_strtolower($keyword));
+
+        // Nếu không có keyword hoặc 'all' → trả đúng số product theo limit
+        if ($keyword === '' || $keyword === 'all') {
+            return array_slice($products, 0, $limit);
         }
 
-        $keyword = mb_strtolower(trim($keyword));
+        // Keyword có giá trị → lọc theo từng từ trong keyword
+        $words = preg_split('/\s+/', $keyword, -1, PREG_SPLIT_NO_EMPTY);
 
-        return array_values(array_filter($products, function ($p) use ($keyword) {
+        $filtered = array_filter($products, function ($p) use ($words) {
             $title  = mb_strtolower($p['title'] ?? '');
             $vendor = mb_strtolower($p['vendor'] ?? '');
-            return $keyword === '' ? true : (str_contains($title, $keyword) || str_contains($vendor, $keyword));
-        }));
+
+            // ✅ Tất cả từ trong keyword phải xuất hiện (AND logic)
+            foreach ($words as $word) {
+                if (!str_contains($title, $word) && !str_contains($vendor, $word)) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
+
+        // Giới hạn kết quả
+        return array_slice(array_values($filtered), 0, $limit);
     }
+
+
 }

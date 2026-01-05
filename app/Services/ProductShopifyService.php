@@ -31,7 +31,6 @@ class ProductShopifyService
         }
 
         return $filtered;
-
     }
 
     public function getProduct($id)
@@ -68,7 +67,7 @@ class ProductShopifyService
     
     public function listSoftDeleted()
     {
-        return $this->repo->getSoftDeletedProducts();
+        return $this->repo->getSoftDeletedProduct();
     }
     
     public function deleteProduct($id)

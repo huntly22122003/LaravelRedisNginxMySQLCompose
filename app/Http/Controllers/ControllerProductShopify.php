@@ -26,13 +26,16 @@ class ControllerProductShopify extends Controller
 
         // Lấy token qua service (không gọi Model trực tiếp)
         $token = $service->getToken();
-;
 
         // Lấy danh sách sản phẩm
         $products = $service->listProducts(10);
 
 
-        return view('shopify.products', compact('products', 'token'));
+        return [
+        'products' => $products,
+        'token' => $token,
+        ];
+
     }
 
     public function store(Request $request)
@@ -42,8 +45,7 @@ class ControllerProductShopify extends Controller
             $request->input('price')
         );
 
-        return redirect()->route('products.index')
-                         ->with('success', 'Product created: '.$product['title']);
+        return redirect()->route('shopify.session');
     }
 
     public function edit($id)
@@ -55,36 +57,42 @@ class ControllerProductShopify extends Controller
         return view('shopify.products_edit', compact('product', 'token'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
+        $id = $request->input('id'); // lấy id từ hidden input
+
         $product = $this->service->updateProduct(
             $id,
             $request->input('title'),
             $request->input('price')
         );
 
-        return redirect()->route('products.index')
-                         ->with('success', 'Product updated: '.$product['title']);
+        return redirect()->route('shopify.session');
+
+
     }
 
-    public function softDelete($id)
-    {
+    public function softDelete(Request $request)
+    {   
+        $id = $request->input('id');
         $this->service->softDeleteProduct($id);
-        return redirect()->route('products.index')
-                         ->with('success', 'Product soft deleted');
+        return redirect()->route('shopify.session');
     }
 
     public function softDeletedIndex()
     {
         $products = $this->service->listSoftDeleted();
-        return view('shopify.products_softdelete', compact('products'));
+        return [
+            'softDelete' => $products,
+        ];
     }
 
-    public function destroy($id) // hard deleteproducts.softDelete
+    public function destroy(Request $request) // hard deleteproducts.softDelete
     {
+        $id = $request->input('id');
         $this->service->deleteProduct($id);
 
-        return redirect()->route('products.index')
-                         ->with('success', 'Product deleted');
+        return redirect()->route('shopify.session');
+
     }
 }

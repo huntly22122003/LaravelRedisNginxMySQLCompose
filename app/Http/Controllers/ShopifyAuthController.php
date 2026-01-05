@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 use App\Models\Shopify;
 use Illuminate\Support\Facades\Http;
 
-class ShopifyController extends Controller
+class ShopifyAuthController extends Controller
 {
     public function redirect(Request $request)
     {

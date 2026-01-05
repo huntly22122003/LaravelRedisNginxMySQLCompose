@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\ShopifyService;
+use App\Http\Controllers\ControllerProductShopify;
 
 class ShopifyController extends Controller
 {
@@ -50,11 +51,27 @@ class ShopifyController extends Controller
     public function storeSession()
     {
         $result = $this->service->storeSession();
+        $shop = $result['shop'];
+        $data = $result['data'];
 
+        $productData = app(ControllerProductShopify::class)->index();
+        $productSoftdelete = app(ControllerProductShopify::class)->softDeletedIndex();
+        $firstProductId = $products[0]['id'] ?? null;
+        if ($firstProductId) {
+            $variantData = app(VariantShopifyController::class)->index($firstProductId);
+            $variants = $variantData['variants'];
+        } else {
+            $variants = [];
+        }
+        $products = $productData['products'];
+        $softDelete = $productSoftdelete['softDelete'];
         if ($result) {
             return view('shopify.success', [
-            'shop' => $result['shop'],
-            'data' => $result['data'],
+            'shop' => $shop,
+            'data' => $data,
+            'products' => $products,
+            'softDelete' => $softDelete,
+            'variants' => $variants,
         ]);
 
         }
