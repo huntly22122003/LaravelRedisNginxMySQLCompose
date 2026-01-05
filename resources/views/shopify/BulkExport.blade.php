@@ -57,5 +57,10 @@
 
     {{-- Bootstrap JS --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<a href="{{ route('shopify.session') }}" class="btn btn-primary mt-3" target="_top">
+   ⬅ Return
+</a>
+
 </body>
 </html>

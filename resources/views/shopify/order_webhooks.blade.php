@@ -23,3 +23,7 @@
         @endforeach
     </tbody>
 </table>
+
+<a href="{{ url()->previous() }}">
+    <button type="button">⬅ Return</button>
+</a>

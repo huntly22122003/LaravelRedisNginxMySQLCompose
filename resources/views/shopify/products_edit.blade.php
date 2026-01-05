@@ -17,12 +17,6 @@
         <button type="submit">Update Product</button>
     </form>
 </div>
-<!-- Nút sang trang Soft Delete -->
-    <div style="margin-top:20px;">
-        <a href="{{ route('products.softDeletedIndex') }}">
-            <button type="button">Xem sản phẩm đã Soft Delete</button>
-        </a>
-    </div>
 
 </body>
 </html>

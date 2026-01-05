@@ -36,6 +36,10 @@
             </form>
         </div>
     </div>
+            
+    <a href="{{ route('shopify.session') }}" class="btn btn-primary mt-3" target="_top">
+    ⬅ Return
+    </a>
 </div>
 
 {{-- Bootstrap JS --}}
