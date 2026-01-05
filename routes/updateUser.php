@@ -1,4 +1,4 @@
-<?
+<?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UpdateUserController;
 use App\Http\Controllers\UpdateUserPassword;

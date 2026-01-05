@@ -9,18 +9,22 @@ use App\Http\Controllers\OrderWebhookController;
 
 //OAuth routes
 Route::get('/install', [ShopifyController::class, 'install'])->name('shopify.install');
-Route::get('/shopify/callback', [ShopifyController::class, 'oauthCallback'])->name('shopify.callback');
-Route::get('/shopify/session', [ShopifyController::class, 'storeSession'])->name('shopify.session');
+Route::get('/auth/shopify/callback', [ShopifyController::class, 'oauthCallback'])->name('shopify.callback');
+Route::match(['get', 'post', 'put', 'patch', 'delete'], '/shopify/session',
+    [ShopifyController::class, 'storeSession']
+)->name('shopify.session');
+
 
 
 //Product routes
 Route::get('/products', [ControllerProductShopify::class, 'index'])->name('products.index');
 Route::post('/products', [ControllerProductShopify::class, 'store'])->name('products.store');
 Route::get('/products/{id}/edit', [ControllerProductShopify::class, 'edit'])->name('products.edit');
-Route::put('/products/{id}', [ControllerProductShopify::class, 'update'])->name('products.update');
+Route::put('/products/update', [ControllerProductShopify::class, 'update'])->name('products.update');
+
 
 // Soft delete routes Product
-Route::delete('/products/{id}/soft', [ControllerProductShopify::class, 'softDelete'])->name('products.softDelete');
+Route::delete('/products/soft', [ControllerProductShopify::class, 'softDelete'])->name('products.softDelete');
 Route::get('/products/softdeleted', [ControllerProductShopify::class, 'softDeletedIndex'])->name('products.softDeletedIndex');
 Route::delete('/products/{id}', [ControllerProductShopify::class, 'destroy'])->name('products.destroy');
 
