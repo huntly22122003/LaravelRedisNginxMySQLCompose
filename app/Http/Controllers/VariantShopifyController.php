@@ -35,8 +35,7 @@ class VariantShopifyController extends Controller
             $request->input('option1')
         );
 
-        return response()->json([ 'message' => 'Variant created successfully', 'variant' => $variant,
-]);
+        return redirect()->route('shopify.session'); // return redirect()->noContent(); if API only
 
     }
 
@@ -58,13 +57,13 @@ class VariantShopifyController extends Controller
             $request->only(['title','price','sku','option1'])
         );
 
-        return response()->json(['message' => 'Variant updated successfully']);
+        return redirect()->route('shopify.session');
     }
 
     public function destroy($productId, $variantId)
     {
         $this->service->deleteVariant($productId, $variantId);
 
-        return response()->json(['message' => 'Variant deleted successfully']);
+        return redirect()->route('shopify.session');
     }
 }
