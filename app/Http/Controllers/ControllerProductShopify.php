@@ -40,11 +40,10 @@ class ControllerProductShopify extends Controller
 
     public function store(Request $request)
     {
-        $product = $this->service->addProduct(
-            $request->input('title'),
-            $request->input('price')
-        );
-
+         $title = $request->input('title');
+        $price = $request->input('price');
+        $isNotifyActive = $request->input('is_notify_active');
+        $product = $this->service->addProduct($title, $price, $isNotifyActive);
         return redirect()->route('shopify.session');
     }
 

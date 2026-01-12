@@ -5,6 +5,7 @@ namespace App\Repositories;
 use Illuminate\Support\Facades\Http;
 use App\Models\Shopify;
 use App\Models\ShopifySoftDeleteProduct;
+use App\Models\Product_Notify;
 
 class ProductShopifyRepository
 {
@@ -26,12 +27,16 @@ class ProductShopifyRepository
     {
         return $this->token;
     }
+    public function shopifyRequest()
+    {
+        return Http::withHeaders([
+            'X-Shopify-Access-Token' => $this->token,
+        ]);
+    }
 
     public function getProducts($limit = 10)
     {
-        $response = Http::withHeaders([
-            'X-Shopify-Access-Token' => $this->token,
-        ])->get("https://{$this->shop}/admin/api/2025-01/products.json", [
+        $response = $this->shopifyRequest()->get("https://{$this->shop}/admin/api/2025-01/products.json", [
             'limit' => $limit
         ]);
 
@@ -40,29 +45,36 @@ class ProductShopifyRepository
 
     public function getProduct($id)
     {
-        $response = Http::withHeaders([
-            'X-Shopify-Access-Token' => $this->token,
-        ])->get("https://{$this->shop}/admin/api/2025-01/products/{$id}.json");
+        $response = $this->shopifyRequest()->get("https://{$this->shop}/admin/api/2025-01/products/{$id}.json");
 
         return $response->json('product') ?? null;
     }
 
-    public function createProduct(array $data)
+    public function createProduct(array $data,$isNotify)
     {
-        $response = Http::withHeaders([
-            'X-Shopify-Access-Token' => $this->token,
-        ])->post("https://{$this->shop}/admin/api/2025-01/products.json", [
+        $response = $this->shopifyRequest()->post("https://{$this->shop}/admin/api/2025-01/products.json", [
             'product' => $data
         ]);
+        $product = $response->json('product') ?? null;
+        $id = $product['id'] ?? null;
+        if($isNotify)
+        {
+            $this->createProductNotify($id);
+        }
+        return $product;
+    }
+    public function createProductNotify($productId)
+    {
+        return Product_Notify::create([
+        'product_id' => $productId,
+        'is_notify_active' => true
+        ]);
 
-        return $response->json('product') ?? null;
     }
 
     public function updateProduct($id, array $data)
     {
-        $response = Http::withHeaders([
-            'X-Shopify-Access-Token' => $this->token,
-        ])->put("https://{$this->shop}/admin/api/2025-01/products/{$id}.json", [
+        $response = $this->shopifyRequest()->put("https://{$this->shop}/admin/api/2025-01/products/{$id}.json", [
             'product' => $data
         ]);
 
@@ -71,11 +83,12 @@ class ProductShopifyRepository
 
     public function softDeleteProduct($id)
     {
-       $response = Http::withHeaders([
-            'X-Shopify-Access-Token' => $this->token,
-        ])->get("https://{$this->shop}/admin/api/2025-01/products/{$id}.json");
+       $response = $this->shopifyRequest()->get("https://{$this->shop}/admin/api/2025-01/products/{$id}.json");
 
         $product = $response->json('product');
+
+        if($response->failed())
+            return false; // failed() out status 200-299 successful() status 200-299 -> Method Laravel HTTP Client illuminate\Support\Facades\Http
 
         if ($product) {
             ShopifySoftDeleteProduct::create([
@@ -88,11 +101,11 @@ class ProductShopifyRepository
 
     }
 
-    public function getsoftDeletedProducts()
+    public function getsoftDeletedProduct()
     {
         return ShopifySoftDeleteProduct::all();
     }
-    public function getsoftDeletedProduct()
+    public function getAllSoftDeleteProduct()
     {
        return ShopifySoftDeleteProduct::all()->map(function ($item) {
         $payload = json_decode($item->payload, true);
@@ -106,9 +119,7 @@ class ProductShopifyRepository
 
     public function deleteProduct($id) // Xóa vĩnh viễn trên Shopify và xóa bản ghi soft delete trong DB
     {
-         $response = Http::withHeaders([
-            'X-Shopify-Access-Token' => $this->token,
-        ])->delete("https://{$this->shop}/admin/api/2025-01/products/{$id}.json");
+         $response = $this->shopifyRequest()->delete("https://{$this->shop}/admin/api/2025-01/products/{$id}.json");
 
         if ($response->successful()) {
             ShopifySoftDeleteProduct::where('shopify_product_id', $id)->delete();

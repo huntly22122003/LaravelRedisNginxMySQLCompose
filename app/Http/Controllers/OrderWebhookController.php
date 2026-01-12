@@ -19,6 +19,6 @@ class OrderWebhookController extends Controller
     {
         $this->service->handleOrderCreate($request);
         Log::info('ALL HEADERS', $request->headers->all());
-        return response()->json(['ok' => true]);
+        return response()->json(['ok' => true], 200);
     }
 }

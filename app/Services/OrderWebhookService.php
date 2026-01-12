@@ -2,15 +2,18 @@
 namespace App\Services;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use App\Repositories\OrderWebhookRepository;
 use App\Repositories\ShopifyRepository;
+use App\Repositories\ProductNotifyRepository;
 use Illuminate\Support\Facades\Log;
 
 class OrderWebhookService
 {
    public function __construct(
         protected OrderWebhookRepository $orderWebhookRepo,
-        protected ShopifyRepository $shopifyRepo
+        protected ShopifyRepository $shopifyRepo,
+        protected ProductNotifyRepository $ProductNotify
     ) {}
 
     public function handleOrderCreate(Request $request): void
@@ -30,6 +33,8 @@ class OrderWebhookService
         // Idempotency
         $webhookId = $request->header('X-Shopify-Webhook-Id');
         if ($this->orderWebhookRepo->existsByWebhookId($webhookId)) {
+            Log::info("Webhook {$webhookId} đã xử lý rồi, bỏ qua. Lần 1");
+            Log::info($request);
             return;
         }
 
@@ -55,6 +60,7 @@ class OrderWebhookService
             'raw_payload'        => $payload,
             'received_at'        => now(),
         ]);
+        $this->SendMail($request);
     }
 
     public function listOrders(int $limit = 50)
@@ -62,4 +68,24 @@ class OrderWebhookService
         return $this->orderWebhookRepo->getLatestOrders($limit);
     }
 
+    public function SendMail(Request $request)
+    {
+        $payload = $request->json()->all();
+        $item= $payload['line_items'][0] ?? null;
+        $id = $item['product_id'] ?? null;
+        $title = $item['title'] ??null;
+        $mail = $payload['email'] ?? ($payload['customer']['email'] ?? null);
+        $productid = $this->ProductNotify->findProduct($id);
+        $quantity = $item['quantity'] ?? 0;
+        $date     = isset($payload['created_at'])
+        ? \Carbon\Carbon::parse($payload['created_at'])->format('d/m/Y')
+        : now()->format('d/m/Y');
+        $messageText = "Product {$title} (với id{$id}) đã được mua - số lượng: {$quantity} - ngày: {$date}";
+        Log::info("Kiem tra: {$id} ");
+        if($productid)
+            Mail::raw($messageText, function ($message) use ($mail) {
+            $message->to($mail)
+                    ->subject('Product Notification');
+        });
+    }
 }

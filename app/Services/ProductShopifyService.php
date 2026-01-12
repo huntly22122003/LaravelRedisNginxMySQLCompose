@@ -22,7 +22,7 @@ class ProductShopifyService
     {
         $products = $this->repo->getProducts($limit);
         // Lấy danh sách ID đã soft delete
-        $softDeletedIds = $this->repo->getSoftDeletedProducts()->pluck('shopify_product_id')->toArray();
+        $softDeletedIds = $this->repo->getSoftDeletedProduct()->pluck('shopify_product_id')->toArray();
         $filtered = [];
         foreach ($products as $product) {
             if (!in_array($product['id'], $softDeletedIds)) {
@@ -38,7 +38,7 @@ class ProductShopifyService
         return $this->repo->getProduct($id);
     }
 
-    public function addProduct($title, $price)
+    public function addProduct($title, $price, $isNotifyActive)
     {
         $data = [
             'title' => $title,
@@ -46,7 +46,7 @@ class ProductShopifyService
                 ['price' => $price]
             ]
         ];
-        return $this->repo->createProduct($data);
+        return $this->repo->createProduct($data, $isNotifyActive);
     }
 
     public function updateProduct($id, $title, $price)
@@ -67,7 +67,7 @@ class ProductShopifyService
     
     public function listSoftDeleted()
     {
-        return $this->repo->getSoftDeletedProduct();
+        return $this->repo->getAllSoftDeleteProduct();
     }
     
     public function deleteProduct($id)
