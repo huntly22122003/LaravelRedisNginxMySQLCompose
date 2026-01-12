@@ -4,6 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Illuminate\Http\Middleware\HandleCors;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -13,18 +14,28 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+
+        // ✅ BẬT CORS (BẮT BUỘC)
+        $middleware->append(HandleCors::class);
+
+        // ✅ Trust proxy cho ngrok / https
         $middleware->trustProxies(
-        at: '*',
-        headers: Request::HEADER_X_FORWARDED_FOR
-               | Request::HEADER_X_FORWARDED_HOST
-               | Request::HEADER_X_FORWARDED_PORT
-               | Request::HEADER_X_FORWARDED_PROTO
-    );
-    $middleware->validateCsrfTokens(except: [
-        'webhooks/*',
-    ]);
+            at: '*',
+            headers:
+                Request::HEADER_X_FORWARDED_FOR |
+                Request::HEADER_X_FORWARDED_HOST |
+                Request::HEADER_X_FORWARDED_PORT |
+                Request::HEADER_X_FORWARDED_PROTO
+        );
+
+        // ✅ Bỏ CSRF cho webhook / notify
+        $middleware->validateCsrfTokens(except: [
+            'webhooks/*',
+            'notify',
+            'api/notify',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
-    })->create();
+    })
+    ->create();
