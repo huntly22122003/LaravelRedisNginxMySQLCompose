@@ -40,3 +40,5 @@ Route::get('/health-check', function () {
         'errors'   => $errors,
     ], $code);
 });
+
+require __DIR__.'/notify.php';
