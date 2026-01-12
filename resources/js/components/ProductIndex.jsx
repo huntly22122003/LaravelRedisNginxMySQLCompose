@@ -8,6 +8,7 @@ import {
   ResourceList,
   ResourceItem,
   InlineStack,
+  Checkbox
 } from '@shopify/polaris';
 
 export default function ProductManager({ products, accessToken, productstore, productedit, productupdate, softdelete, softDeleteData, harddelete, Variant, variantUpdate, variantDelete, variantCreate   }) {
@@ -26,6 +27,7 @@ export default function ProductManager({ products, accessToken, productstore, pr
   const [editingVariantPrice, setEditingVariantPrice] = useState('');
   const [editingVariantOption1, setEditingVariantOption1] = useState('');
   const [editingVariantSku, setEditingVariantSku] = useState('');
+  const [isNotifyActive, setIsNotifyActive] = useState(false); //CheckBox
 
   const fetchVariants = async (productId) => {
   try {
@@ -59,6 +61,9 @@ export default function ProductManager({ products, accessToken, productstore, pr
           <input type="hidden" name="_token" value={window.csrfToken} />
           <TextField label="Product Title" name="title" value={title} onChange={setTitle} required />
           <TextField label="Price" name="price" value={price} onChange={setPrice} required />
+          {/* hidden input để gửi giá trị toggle về backend */}
+           <Checkbox label="Notify purchased" checked={isNotifyActive} onChange={setIsNotifyActive}/>
+          <input type="hidden" name="is_notify_active" value={isNotifyActive ? 1 : 0} />
           <Button submit primary>Add Product</Button>
         </form>
       </Card>
