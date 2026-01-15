@@ -1,49 +1,5 @@
-CREATE TABLE user_shops (
-    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NULL,
-    email VARCHAR(150) UNIQUE NOT NULL,
-    phone VARCHAR(20) NULL,
-    address VARCHAR(255) NULL,
-    password VARCHAR(255) NOT NULL,
-    last_password_change TIMESTAMP NULL,
-    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-GRANT ALL PRIVILEGES ON shop.* TO 'laravel'@'%';
-FLUSH PRIVILEGES;
-
-CREATE TABLE roles (
-    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(50) UNIQUE NOT NULL,
-    description VARCHAR(255) NULL,
-    created_at TIMESTAMP NULL,
-    updated_at TIMESTAMP NULL
-);
-
-CREATE TABLE permissions (
-    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) UNIQUE NOT NULL,
-    description VARCHAR(255) NULL,
-    created_at TIMESTAMP NULL,
-    updated_at TIMESTAMP NULL
-);
-
-CREATE TABLE role_user (
-    user_id BIGINT UNSIGNED NOT NULL,
-    role_id BIGINT UNSIGNED NOT NULL,
-    PRIMARY KEY (user_id, role_id),
-    FOREIGN KEY (user_id) REFERENCES user_shops(id) ON DELETE CASCADE,
-    FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
-);
-
-CREATE TABLE permission_role (
-    role_id BIGINT UNSIGNED NOT NULL,
-    permission_id BIGINT UNSIGNED NOT NULL,
-    PRIMARY KEY (role_id, permission_id),
-    FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE,
-    FOREIGN KEY (permission_id) REFERENCES permissions(id) ON DELETE CASCADE
-);
-
 THIS PROJECT USING NGINX, LARAVEL, REDIS, MYSQL
 USING SERVICE, REPOSITORIES TO SOLVE CONTROLLER
+scheme.sql is sql for this PROJECT
+luana-unpenetrative-fumiko.ngrok-free.dev/install?shop=justastore-9748.myshopify.com
+(myurl/install?=myapp.myshopify.com-> callback-> to application)
