@@ -47,6 +47,15 @@ class ControllerProductShopify extends Controller
         return redirect()->route('shopify.session');
     }
 
+    public function store_NextJS(Request $request)
+    {
+        $title = $request->input('title');
+        $price = $request->input('price');
+        $isNotifyActive = $request->input('is_notify_active');
+        $product = $this->service->addProduct($title, $price, $isNotifyActive);
+        return ['message'=>'success'];
+    }
+
     public function edit($id)
     {
         $product = $this->service->getProduct($id);
@@ -54,6 +63,17 @@ class ControllerProductShopify extends Controller
         $token = $shopify ? $shopify->access_token : null;
 
         return view('shopify.products_edit', compact('product', 'token'));
+    }
+
+    public function update_NextJS(Request $request)
+    {
+        $id = $request->input('id');
+        $product = $this->service->updateProduct(
+            $id,
+            $request->input('title'),
+            $request->input('price')
+        );
+        return ['message'=>'success'];
     }
 
     public function update(Request $request)
@@ -67,8 +87,6 @@ class ControllerProductShopify extends Controller
         );
 
         return redirect()->route('shopify.session');
-
-
     }
 
     public function softDelete(Request $request)
@@ -77,7 +95,13 @@ class ControllerProductShopify extends Controller
         $this->service->softDeleteProduct($id);
         return redirect()->route('shopify.session');
     }
+    public function destroy(Request $request) // hard deleteproducts.softDelete
+    {
+        $id = $request->input('id');
+        $this->service->deleteProduct($id);
 
+        return redirect()->route('shopify.session');
+    }
     public function softDeletedIndex()
     {
         $products = $this->service->listSoftDeleted();
@@ -85,13 +109,15 @@ class ControllerProductShopify extends Controller
             'softDelete' => $products,
         ];
     }
-
-    public function destroy(Request $request) // hard deleteproducts.softDelete
+    public function softDelete_NextJS(Request $request)
     {
         $id = $request->input('id');
+        $this->service->softDeleteProduct($id);
+        return ['message' =>'success'];
+    }
+    public function destroy_NextJS($id) // hard deleteproducts.softDelete
+    {
         $this->service->deleteProduct($id);
-
-        return redirect()->route('shopify.session');
-
+        return ['message' =>'success'];
     }
 }

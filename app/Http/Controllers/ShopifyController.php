@@ -78,5 +78,15 @@ class ShopifyController extends Controller
 
         return redirect()->back()->with('error', 'No Shopify data found.');
     }
+    public function SessionNextJS()
+    {
+        $result = $this->service->storeSession();
+        $shop = $result['shop'];
+        $data = $result['data'];
+        return response()->json([
+            'shop' =>$shop,
+            'data' =>$data,
+        ]);
+    }
 
 }

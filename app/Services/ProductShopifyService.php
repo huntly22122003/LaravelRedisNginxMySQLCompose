@@ -18,7 +18,7 @@ class ProductShopifyService
         return $this->repo->getToken();
     }
 
-    public function listProducts($limit = 10)
+    public function listProducts($limit = 20)
     {
         $products = $this->repo->getProducts($limit);
         // Lấy danh sách ID đã soft delete

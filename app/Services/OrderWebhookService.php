@@ -75,7 +75,7 @@ class OrderWebhookService
         $id = $item['product_id'] ?? null;
         $title = $item['title'] ??null;
         $mail = $payload['email'] ?? ($payload['customer']['email'] ?? null);
-        $productid = $this->ProductNotify->findProduct($id);
+        $productid = $this->ProductNotify->findProduct($id); // Check in repository 
         $quantity = $item['quantity'] ?? 0;
         $date     = isset($payload['created_at'])
         ? \Carbon\Carbon::parse($payload['created_at'])->format('d/m/Y')

@@ -34,13 +34,37 @@ class ProductShopifyRepository
         ]);
     }
 
-    public function getProducts($limit = 10)
+    public function getProducts($limit = 250)
     {
-        $response = $this->shopifyRequest()->get("https://{$this->shop}/admin/api/2025-01/products.json", [
-            'limit' => $limit
-        ]);
+        $products = [];
+        $pageInfo = null;
 
-        return $response->json('products') ?? [];
+        do {
+            $params = ['limit' => $limit];
+
+            if ($pageInfo) {
+                $params['page_info'] = $pageInfo;
+            }
+
+            $response = $this->shopifyRequest()->get(
+                "https://{$this->shop}/admin/api/2025-01/products.json",
+                $params
+            );
+
+            $products = array_merge(
+                $products,
+                $response->json('products') ?? []
+            );
+
+            $linkHeader = $response->header('Link');
+            $pageInfo = null;
+
+            if ($linkHeader && preg_match('/<[^>]*page_info=([^&>]+)[^>]*>; rel="next"/', $linkHeader, $matches)) {
+                $pageInfo = $matches[1];
+            }
+
+        } while ($pageInfo);
+        return $products;
     }
 
     public function getProduct($id)
