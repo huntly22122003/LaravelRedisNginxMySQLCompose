@@ -47,3 +47,6 @@ Route::get('/bulk/products/search', [BulkShopifyController::class, 'searchBulk']
 Route::get('/order-webhooks', [OrderWebhookController::class, 'index'])->name('order.webhooks.index');
 Route::post('/webhooks/orders/create', [OrderWebhookController::class, 'store'])->name('webhooks.orders.create');
 
+//NextJS
+Route::get('/shopify/session-nextjs', [ShopifyController::class,'SessionNextJS'])->name('shopify.session.nextjs');
+

@@ -42,3 +42,4 @@ Route::get('/health-check', function () {
 });
 
 require __DIR__.'/notify.php';
+require __DIR__.'/nextjs_route.php';

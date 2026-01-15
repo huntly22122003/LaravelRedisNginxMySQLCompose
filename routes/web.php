@@ -7,7 +7,14 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
-
+Route::get('/hello', function()
+{
+    return response()->json(['message'=>"Test Backend"]);
+});
+Route::get('/logic', function()
+{
+    return response()->json(['message'=>"Test Backend"]);
+});
 
 /*Route::get('/dashboard', function () {
     return view('dashboard');
