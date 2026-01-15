@@ -1,0 +1,48 @@
+/* ===== Global layout ===== */
+html, body {
+  background-color: #f6f6f7; /* nền xám nhẹ đúng Shopify */
+}
+
+/* Giới hạn chiều rộng nội dung */
+.Polaris-Frame__Content {
+  padding: 24px;
+}
+
+/* Card nhìn thoáng hơn */
+.Polaris-Card {
+  border-radius: 12px;
+}
+
+/* Title trong Page rõ hơn */
+.Polaris-Page__Title {
+  font-weight: 600;
+}
+
+/* Resource item nhìn đỡ dính */
+.Polaris-ResourceItem {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+/* Button nhóm lại gọn */
+.Polaris-InlineStack {
+  flex-wrap: wrap;
+}
+
+/* Section cách nhau rõ ràng */
+.section-space {
+  margin-bottom: 24px;
+}
+
+/* Nhẹ cho form */
+.form-narrow {
+  max-width: 520px;
+}
+
+/* Variant / phụ */
+.subtle-box {
+  background: #ffffff;
+  border: 1px solid #e1e3e5;
+  border-radius: 10px;
+  padding: 16px;
+}

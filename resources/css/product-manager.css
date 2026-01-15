@@ -1,0 +1,25 @@
+.pm-section {
+  margin-bottom: 20px;
+}
+
+.pm-muted {
+  color: #6d7175;
+  font-size: 13px;
+}
+
+.pm-actions {
+  margin-top: 8px;
+}
+
+.pm-variant-card {
+  background: #f6f6f7;
+}
+
+.pm-form {
+  max-width: 480px;
+}
+
+.pm-divider {
+  border-top: 1px solid #e1e3e5;
+  margin: 16px 0;
+}

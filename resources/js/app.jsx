@@ -1,85 +1,112 @@
-// resources/js/app.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { AppProvider, Frame } from '@shopify/polaris';
+import {
+  AppProvider,
+  Frame,
+  Navigation,
+} from '@shopify/polaris';
 import '@shopify/polaris/build/esm/styles.css';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import Success from './components/success.jsx';
 import ProductManager from './components/ProductIndex.jsx';
 import WebHooksOrder from './components/WebHooksOrder.jsx';
 import BulkImport from './components/BulkImport.jsx';
 import BulkExport from './components/BulkExport.jsx';
-//import ProductEdit from './components/ProductEdit.jsx';
+
 const container = document.getElementById('app');
 
-if (container) { // ✅ chỉ render khi container tồn tại
-    const root = createRoot(container);
-
-    const shop = container.dataset.shop;
-    const scope = container.dataset.scope;
-    const accessToken = container.dataset.accessToken;
-    const productsUrl = container.dataset.productsUrl;
-    const bulkshopifyUrl = container.dataset.bulkshopifyUrl;
-    const ordersUrl = container.dataset.ordersUrl;
-    const products = JSON.parse(container.dataset.products || '[]');
-    const productstore = container.dataset.productsStore;
-    const productedit = container.dataset.productsedit;
-    const productupdate = container.dataset.productsUpdate;
-    const softdelete = container.dataset.productsSoftdelete;
-    const harddelete = container.dataset.productsHarddelete;
-    const softdeleteData = JSON.parse(container.dataset.productsSoftdeleteproduct || '[]');
-    const Variant = container.dataset.variants;
-    const variantUpdate = container.dataset.variantsUpdate;
-    const variantDelete = container.dataset.variantsDelete;
-    const variantCreate = container.dataset.variantsCreate;
-    const orderWebhooksIndex = container.dataset.ordersIndex;
-    const bulkImportUrl = container.dataset.bulkImport;
-    const bulkExportUrl = container.dataset.bulkExport;
-    const bulkExportSearchUrl = container.dataset.bulkExportsearch;
-    console.log('Shopify App Data:', { shop, scope, accessToken, productsUrl, bulkshopifyUrl, ordersUrl });
-    console.log('Soft Delete Data:', softdeleteData);
-    console.log('Variant URL:', Variant);
-    console.log("Orders data:", orderWebhooksIndex);
-    root.render(
-        <AppProvider i18n={{}}> 
-                <Frame>
-        <Success
-            shop={shop}
-            scope={scope}
-            accessToken={accessToken}
-            productsUrl={productsUrl}
-            bulkshopifyUrl={bulkshopifyUrl}
-            ordersUrl={ordersUrl}
-        />
-        <ProductManager
-        products={products}
-        accessToken={accessToken}
-        productstore={productstore}
-        productedit={productedit}
-        productupdate={productupdate}
-        softdelete={softdelete}
-        softDeleteData={softdeleteData}
-        harddelete={harddelete}
-        Variant={Variant}
-        variantUpdate={variantUpdate}
-        variantDelete={variantDelete}
-        variantCreate={variantCreate}
-        />
-
-        <WebHooksOrder
-          orders={orderWebhooksIndex}
-        />
-         <BulkImport
-          bulkImportUrl={bulkImportUrl}
-        />
-        <BulkExport
-          bulkExportUrl={bulkExportUrl}
-            bulkExportSearchUrl={bulkExportSearchUrl}
-        />
-        </Frame>
-        </AppProvider>
-    );
-} else {
+if (!container) {
   console.error('#app container not found');
+} else {
+  const root = createRoot(container);
+  const data = container.dataset;
+
+  const products = JSON.parse(data.products || '[]');
+  const softDeleteData = JSON.parse(
+    data.productsSoftdeleteproduct || '[]'
+  );
+
+  const VIEWS = {
+    HOME: 'home',
+    PRODUCTS: 'products',
+    ORDERS: 'orders',
+    BULK_IMPORT: 'bulk_import',
+    BULK_EXPORT: 'bulk_export',
+  };
+
+  function App() {
+    const [view, setView] = useState(VIEWS.HOME);
+
+    const renderView = () => {
+      switch (view) {
+        case VIEWS.PRODUCTS:
+          return (
+            <ProductManager
+              products={products}
+              accessToken={data.accessToken}
+              productstore={data.productsStore}
+              productedit={data.productsedit}
+              productupdate={data.productsUpdate}
+              softdelete={data.productsSoftdelete}
+              harddelete={data.productsHarddelete}
+              softDeleteData={softDeleteData}
+              Variant={data.variants}
+              variantUpdate={data.variantsUpdate}
+              variantDelete={data.variantsDelete}
+              variantCreate={data.variantsCreate}
+            />
+          );
+
+        case VIEWS.ORDERS:
+          return <WebHooksOrder orders={data.ordersIndex} />;
+
+        case VIEWS.BULK_IMPORT:
+          return <BulkImport bulkImportUrl={data.bulkImport} />;
+
+        case VIEWS.BULK_EXPORT:
+          return (
+            <BulkExport
+              bulkExportUrl={data.bulkExport}
+              bulkExportSearchUrl={data.bulkExportsearch}
+            />
+          );
+
+        default:
+          return (
+            <Success
+              shop={data.shop}
+              scope={data.scope}
+              accessToken={data.accessToken}
+              productsUrl={data.productsUrl}
+              bulkshopifyUrl={data.bulkshopifyUrl}
+              ordersUrl={data.ordersUrl}
+            />
+          );
+      }
+    };
+
+    return (
+      <AppProvider i18n={{}}>
+        <Frame
+          navigation={
+            <Navigation location={view}>
+              <Navigation.Section
+                items={[
+                  { label: 'Home', onClick: () => setView(VIEWS.HOME) },
+                  { label: 'Products', onClick: () => setView(VIEWS.PRODUCTS) },
+                  { label: 'Orders Webhook', onClick: () => setView(VIEWS.ORDERS) },
+                  { label: 'Bulk Import', onClick: () => setView(VIEWS.BULK_IMPORT) },
+                  { label: 'Bulk Export', onClick: () => setView(VIEWS.BULK_EXPORT) },
+                ]}
+              />
+            </Navigation>
+          }
+        >
+          {renderView()}
+        </Frame>
+      </AppProvider>
+    );
+  }
+
+  root.render(<App />);
 }
